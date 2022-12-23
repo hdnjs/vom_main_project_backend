@@ -14,7 +14,7 @@
     $pro_name = $_POST['product_name'];
     $pro_price = $_POST['product_price'];
     $pro_desc = nl2br($_POST['product_desc']);  //  nl2br: 엔터로 개행 시 br 태그 자동 입력
-    $pro_desc = addslashes($pro_desc);  //  따옴표 중복 작성ㅇ 시 '/' 처리를 자동으로 실행
+    // $pro_desc = addslashes($pro_desc);  //  따옴표 중복 작성ㅇ 시 '/' 처리를 자동으로 실행
 
     // 날짜 변수
     $pro_reg = date("Y-m-d H:i:s");
@@ -39,17 +39,49 @@
         exit();
     }
 
-    // 파일 사이즈 제한
+    // // 파일 사이즈 제한
     if($limit <= $image_size)   {
         echo json_encode(array("msg" => "사진 파일은 50MB를 넘을 수 없습니다."));
         exit();
     }
 
+    $image_dir = $_SERVER['DOCUMENT_ROOT'].'/main_project/images/products/';  //  사진이 저장될 경로 저장
+
     // 이미지 업로드: 파일 업로드 시 파일 자체는 지정ㅇ한 디렉토리 안으로 가고, DB에는 파일 이름 문자열이 저장된다.
     if($image_name && !$image_error)    {
-
+        //  move_uploaded_file(파일 임시 이름, 이동할 위치)
+        $upload_file = $image_dir.$image_name;
+        if(!move_uploaded_file($image_tmp_name, $upload_file)) {
+            echo json_encode(array("msg" => "사진이 업로드 되지 않았습니다."));
+            exit();
+        }  
     }   else    {
         $image_name = "";
+    }
+
+    // 접속 정보 로드
+    include_once $_SERVER['DOCUMENT_ROOT'].'/main_backend/connect/dbconn.php';
+
+    // sql 명령어 입력
+    // sql 입력 명령어 작성
+    $sql = "INSERT INTO spl_products (pro_name, pro_pri, pro_desc, pro_img, pro_reg) VALUES (?, ?, ?, ?, ?)";
+
+    $stmt = $conn->stmt_init();
+
+    if(!$stmt->prepare($sql))   {
+        http_response_code(400);
+        echo json_encode(array("msg" => "Database insert fail."));
+    }
+
+    $stmt -> bind_param("sssss", $pro_name, $pro_price, $pro_desc, $image_name, $pro_reg);
+    $stmt -> execute();
+
+    if($stmt->affected_rows > 0)    {
+        http_response_code(200);
+        echo json_encode(array("msg" => "입력이 완료되었습니다."));
+    }   else    {
+        http_response_code(400);
+        echo json_encode(array("msg" => "입력에 실패했습니다."));
     }
 
     // echo json_encode(array("msg" => $pro_name, "price" => $pro_price, "desc" => $pro_desc, "reg" => $pro_reg, "img_name" => $image_name, "img_tmp_name" => $img_tmp_name, "img_type" => $image_type, "img_size" => $image_size, "img_error" => $image_error, "exp" => $exp));
