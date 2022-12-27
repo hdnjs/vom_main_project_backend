@@ -9,8 +9,15 @@
 include $_SERVER['DOCUMENT_ROOT'].'/main_backend/connect/dbconn.php';
 
 $sql = "SELECT * FROM spl_products ORDER BY pro_reg DESC LIMIT 6";
+
 $result = mysqli_query($conn, $sql);   //  첫번째 파라미터: 접속정보, 두번째 파라미터: 쿼리문
 
-echo json_encode(array("msg" => mysqli_fetch_array($result)));
+$json_result = array(); //  빈 배열 초기화
+
+while($row = mysqli_fetch_array($result))   {
+    array_push($json_result, array('pro_idx' => $row['pro_idx'], 'pro_name' => $row['pro_name'], 'pro_pri' => $row['pro_pri'], 'pro_desc' => $row['pro_desc'], 'pro_img' => $row['pro_img'], 'pro_reg' => $row['pro_reg']));  //  첫번째 파라미터: 대상 배열, 두번째 파라미터: 배열 입력값
+}
+
+echo json_encode($json_result);
 
 ?>
