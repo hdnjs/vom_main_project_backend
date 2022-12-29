@@ -91,7 +91,8 @@
                 echo json_encode(array("login_msg" =>  "비밀번호가 틀립니다."));
             }   else    {
                 $_SESSION['userid'] = $userid;
-                echo json_encode(array("userid" => $_SESSION['userid']));
+                $_SESSION['useridx'] = $login_data['user_idx'];
+                echo json_encode(array("userid" => $_SESSION['userid'], "user_idx" => $_SESSION['user_idx']));
             }
 
         //    echo json_encode(array("userid" =>  $pwd_valid));
