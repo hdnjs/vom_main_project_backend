@@ -47,7 +47,7 @@
 
     $image_dir = $_SERVER['DOCUMENT_ROOT'].'/main_project/images/products/';  //  사진이 저장될 경로 저장
 
-    // 이미지 업로드: 파일 업로드 시 파일 자체는 지정ㅇ한 디렉토리 안으로 가고, DB에는 파일 이름 문자열이 저장된다.
+    // 이미지 업로드: 파일 업로드 시 파일 자체는 지정한 디렉토리 안으로 가고, DB에는 파일 이름 문자열이 저장된다.
     if($image_name && !$image_error)    {
         //  move_uploaded_file(파일 임시 이름, 이동할 위치)
         $upload_file = $image_dir.$image_name;

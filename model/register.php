@@ -92,7 +92,7 @@
             }   else    {
                 $_SESSION['userid'] = $userid;
                 $_SESSION['useridx'] = $login_data['user_idx'];
-                echo json_encode(array("userid" => $_SESSION['userid'], "user_idx" => $_SESSION['user_idx']));
+                echo json_encode(array("userid" => $_SESSION['userid'], "user_idx" => $_SESSION['useridx']));
             }
 
         //    echo json_encode(array("userid" =>  $pwd_valid));
