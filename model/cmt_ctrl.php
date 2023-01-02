@@ -1,6 +1,6 @@
 <?php
 
-    // include $_SERVER['DOCUMENT_ROOT'].'/main_backend/etc/error.php';
+    include $_SERVER['DOCUMENT_ROOT'].'/main_backend/etc/error.php';
     include_once $_SERVER['DOCUMENT_ROOT'].'/main_backend/connect/dbconn.php';
 
     if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['req_sign']) && $_GET['req_sign'] == 'post_cmt')    {
@@ -54,8 +54,33 @@
         // echo json_encode(array("u_idx" => $u_idx, "pro_idx" => $pro_idx, "content" => $content, "cmt_reg" => $cmt_reg));
     }
 
+    // 상품 조회
     function get_cmt($conn) {
 
+        $p_idx = $_GET['p_idx'];
+        $userid = $_SESSION['userid'];
+
+        //  sql_cmt 테이블 전체 데이터와 spl_user 테이블의 아이디를 조회한다. (두 개의 테이블 데이터를 동시 조회하기 위해서는 테이블 간 join 필요함)
+        //  조회된 데이터는 파라미터의 상품 데이터에 한정한다.
+        //  조회 결과는 시간의 역순, 즉 최신순으로 나열한다.
+        //  join 참조: https://pearlluck.tistory.com/46
+        $sql = "SELECT spl_cmt.*, spl_user.user_id FROM spl_cmt JOIN spl_user ON spl_cmt.cmt_u_idx = spl_user.user_idx WHERE cmt_pro_idx = $p_idx ORDER BY spl_cmt.cmt_reg DESC";
+        $result = mysqli_query($conn, $sql);
+
+        if(!mysqli_num_rows($result))   {
+            echo json_encode(array("msg" => "조회된 게시글이 없습니다."));
+            exit();
+        }   else    {
+            $json_result = array(); //  빈 배열 초기화
+
+            while($row = mysqli_fetch_array($result))   {
+                array_push($json_result, array('cmt_cont' => $row['cmt_count'], 'cmt_reg' => $row['cmt_reg'], 'user_id' => $row['user_id'], "session_id" => $userid));  
+                //  첫번째 파라미터: 대상 배열, 두번째 파라미터: 배열 입력값
+            }
+        }
+        
+        echo json_encode($json_result);
+        // echo json_encode(array("p_idx" => $p_idx, "userid" => $userid));
     }
 
     function patch_cmt($conn)    {
