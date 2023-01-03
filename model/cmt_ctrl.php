@@ -15,6 +15,44 @@
         patch_cmt($conn);
     }
 
+    function parse_raw_http_request(array &$a_data)
+    {
+      // read incoming data
+      $input = file_get_contents('php://input');
+    
+      // grab multipart boundary from content type header
+      preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+      $boundary = $matches[1];
+    
+      // split content by boundary and get rid of last -- element
+      $a_blocks = preg_split("/-+$boundary/", $input);
+      array_pop($a_blocks);
+
+      // loop data blocks
+      foreach ($a_blocks as $id => $block)
+      {
+        if (empty($block))
+          continue;
+
+        // you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
+
+        // parse uploaded files
+        if (strpos($block, 'application/octet-stream') !== FALSE)
+        {
+          // match "name", then everything after "stream" (optional) except for prepending newlines 
+          preg_match('/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s', $block, $matches);
+        }
+        // parse all other fields
+        else
+        {
+          // match "name" and optional value in between newline sequences
+          preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
+        }
+        $a_data[$matches[1]] = $matches[2];
+      }        
+    }
+
+
     function post_cmt($conn) {
         if(isset($_SESSION['useridx'])) {
             $u_idx = $_SESSION['useridx'];
@@ -58,7 +96,13 @@
     function get_cmt($conn) {
 
         $p_idx = $_GET['p_idx'];
-        $userid = $_SESSION['userid'];
+
+        if(isset($_SESSION['userid']))  {
+            $userid = $_SESSION['userid'];
+        }   else    {
+            $userid = "guest";
+        }
+        
 
         //  sql_cmt 테이블 전체 데이터와 spl_user 테이블의 아이디를 조회한다. (두 개의 테이블 데이터를 동시 조회하기 위해서는 테이블 간 join 필요함)
         //  조회된 데이터는 파라미터의 상품 데이터에 한정한다.
@@ -74,7 +118,7 @@
             $json_result = array(); //  빈 배열 초기화
 
             while($row = mysqli_fetch_array($result))   {
-                array_push($json_result, array('cmt_cont' => $row['cmt_count'], 'cmt_reg' => $row['cmt_reg'], 'user_id' => $row['user_id'], "session_id" => $userid));  
+                array_push($json_result, array('cmt_idx' => $row['cmt_idx'], 'cmt_cont' => $row['cmt_count'], 'cmt_reg' => $row['cmt_reg'], 'user_id' => $row['user_id'], "session_id" => $userid));  
                 //  첫번째 파라미터: 대상 배열, 두번째 파라미터: 배열 입력값
             }
         }
@@ -84,6 +128,39 @@
     }
 
     function patch_cmt($conn)    {
+        $_PATCH = [];
+        parse_str(file_get_contents('php://input'), $_PATCH);
+        parse_raw_http_request($_PATCH);
 
+        $cmt_idx = $_GET['cmt_idx'];
+        $cmt_cont = $_PATCH['update_cont'];
+        // php에서는 공식적으로 post와 get만 지원한다. 따라서 patch, delete, put 등은 별도의 접근 처리를 해줘야한다.
+
+        if(!isset($_SESSION['useridx'])) {
+            echo json_encode(array("msg" => "작성한 본인이 아니면 수정할 수 없습니다."));
+            exit();
+        }
+
+        $sql = "UPDATE spl_cmt set cmt_count = ? WHERE cmt_idx = ?";
+
+        $stmt = $conn->stmt_init();
+
+        if(!$stmt->prepare($sql))   {
+            http_response_code(400);
+            echo json_encode(array("msg" => "글 수정에 실패했습니다.(1)"));
+        }
+
+        $stmt -> bind_param("ss", $cmt_cont, $cmt_idx);
+        $stmt -> execute();
+
+        if($stmt->affected_rows > 0)    {
+            http_response_code(200);
+            echo json_encode(array("msg" => "상품평이 수정되었습니다."));
+        }   else    {
+            http_response_code(400);
+            echo json_encode(array("msg" => "글 수정에 실패했습니다.(2)"));
+
+        }
+        // echo json_encode(array("cmt_idx" => $cmt_idx, "cmt_cont" => $cmt_cont));
     }
 ?>
