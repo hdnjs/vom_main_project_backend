@@ -62,7 +62,23 @@
 
     // 카트 삭제
     if($req_cart == "del_cart")  {
+        $cart_idx = $_GET['cart_idx'];
 
+        // echo json_encode(array("msg" => $cart_idx));
+
+
+        // foreach as 문
+        foreach($_SESSION['cart'] as $key => $value)    {
+            if($value['cart_idx'] == $cart_idx) {
+                // echo json_encode(array("msg" => $key));
+
+                unset($_SESSION['cart'][$key]); //  삭제되는 세션의 인덱스
+                // array_values문 //    삭제된 세션의 인덱스를 재배치
+                $_SESSION['cart'] = array_values(($_SESSION['cart']));
+                echo json_encode(array("msg" => "카트에 상품이 삭제되었습니다."));
+
+            }
+        }
     }
 
     // echo json_encode(array("msg" => "카트 컨트롤 페이지"));
