@@ -27,6 +27,8 @@ while($row = mysqli_fetch_array($result))   {
     array_push($json_result, array('pro_idx' => $row['pro_idx'], 'pro_name' => $row['pro_name'], 'pro_pri' => $row['pro_pri'], 'pro_desc' => $row['pro_desc'], 'pro_img' => $row['pro_img'], 'pro_reg' => $row['pro_reg']));  //  첫번째 파라미터: 대상 배열, 두번째 파라미터: 배열 입력값
 }
 
+header('Cache-Control: no-cache');
+
 echo json_encode($json_result);
 
 ?>
