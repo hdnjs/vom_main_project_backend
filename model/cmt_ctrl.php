@@ -64,13 +64,22 @@
         $content = $_POST['cmt_cont'];
         $cmt_reg = date("Y-m-d H:i:s");
 
+        if(!isset($_POST['cmt_star']))  {
+            $cmt_star = 0;
+        }   else    {
+            $cmt_star = $_POST['cmt_star'];
+        }
+
+        // echo json_encode(array("u_idx" => $u_idx, "pro_idx" => $pro_idx, "content" => $content, "cmt_reg" => $cmt_reg, "cmt_star" => $cmt_star));
+
+
         if(!isset($_SESSION['useridx'])) {
             echo json_encode(array("msg" => "상품평을 작성하려면 로그인이 필요합니다."));
             exit();
         }
 
         // sql 입력 명령어 작성
-        $sql = "INSERT INTO spl_cmt (cmt_u_idx, cmt_pro_idx, cmt_count, cmt_reg) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO spl_cmt (cmt_u_idx, cmt_pro_idx, cmt_count, cmt_reg, cmt_star) VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->stmt_init();
 
         if(!$stmt->prepare($sql))   {
@@ -78,7 +87,7 @@
             echo json_encode(array("msg" => "상품평 입력이 되지 않았습니다."));
         }
 
-        $stmt -> bind_param("ssss", $u_idx, $pro_idx, $content, $cmt_reg);
+        $stmt -> bind_param("sssss", $u_idx, $pro_idx, $content, $cmt_reg, $cmt_star);
         $stmt -> execute();
 
         if($stmt->affected_rows > 0)    {
