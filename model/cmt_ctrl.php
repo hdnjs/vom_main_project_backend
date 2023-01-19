@@ -120,6 +120,13 @@
         $sql = "SELECT spl_cmt.*, spl_user.user_id FROM spl_cmt JOIN spl_user ON spl_cmt.cmt_u_idx = spl_user.user_idx WHERE cmt_pro_idx = $p_idx ORDER BY spl_cmt.cmt_reg DESC";
         $result = mysqli_query($conn, $sql);
 
+        // 특정 컬럼 평균값 구하기
+        // SELECT AVG([column name]) FROM [table name] WHERE [condition]
+
+        $sql_avg = "SELECT AVG(cmt_star) as avg FROM spl_cmt WHERE cmt_pro_idx = $p_idx";
+        $avg_result = mysqli_query($conn, $sql_avg);
+        $avg_arr = mysqli_fetch_array($avg_result)['avg'];
+
         if(!mysqli_num_rows($result))   {
             echo json_encode(array("msg" => "조회된 게시글이 없습니다."));
             exit();
@@ -127,7 +134,7 @@
             $json_result = array(); //  빈 배열 초기화
 
             while($row = mysqli_fetch_array($result))   {
-                array_push($json_result, array('cmt_idx' => $row['cmt_idx'], 'cmt_cont' => $row['cmt_count'], 'cmt_reg' => $row['cmt_reg'], 'user_id' => $row['user_id'], "session_id" => $userid, "rating" => $row['cmt_star']));  
+                array_push($json_result, array('cmt_idx' => $row['cmt_idx'], 'cmt_cont' => $row['cmt_count'], 'cmt_reg' => $row['cmt_reg'], 'user_id' => $row['user_id'], "session_id" => $userid, "rating" => $row['cmt_star'], "avg" => $avg_arr));  
                 //  첫번째 파라미터: 대상 배열, 두번째 파라미터: 배열 입력값
             }
         }
