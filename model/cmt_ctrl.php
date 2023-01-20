@@ -173,14 +173,7 @@
         $stmt -> bind_param("sss", $cmt_cont, $cmt_star, $cmt_idx);
         $stmt -> execute();
 
-        // if($stmt->affected_rows > 0)    {
-        //     http_response_code(200);
             echo json_encode(array("msg" => "상품평이 수정되었습니다."));
-        // }   else    {
-        //     http_response_code(400);
-        //     echo json_encode(array("msg" => "글 수정에 실패했습니다.(2)"));
 
-        // }
-        // echo json_encode(array("cmt_idx" => $cmt_idx, "cmt_cont" => $cmt_cont));
     }
 ?>

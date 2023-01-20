@@ -14,7 +14,6 @@
     $pro_name = $_POST['product_name'];
     $pro_price = $_POST['product_price'];
     $pro_desc = nl2br($_POST['product_desc']);  //  nl2br: 엔터로 개행 시 br 태그 자동 입력
-    // $pro_desc = addslashes($pro_desc);  //  따옴표 중복 작성ㅇ 시 '/' 처리를 자동으로 실행
 
     // 날짜 변수
     $pro_reg = date("Y-m-d H:i:s");
@@ -83,6 +82,4 @@
         http_response_code(400);
         echo json_encode(array("msg" => "입력에 실패했습니다."));
     }
-
-    // echo json_encode(array("msg" => $pro_name, "price" => $pro_price, "desc" => $pro_desc, "reg" => $pro_reg, "img_name" => $image_name, "img_tmp_name" => $img_tmp_name, "img_type" => $image_type, "img_size" => $image_size, "img_error" => $image_error, "exp" => $exp));
 ?>

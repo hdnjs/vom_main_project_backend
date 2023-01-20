@@ -85,16 +85,6 @@
         $user_idx = $_GET['user_idx'];
         $user_lvl = $_PATCH['lvl'];
 
-        // if(!$user_id || $user_lvl != 1) {
-        //     echo    "
-        //         <script>
-        //         alert('잘못된 접근입니다.');
-        //         location,href='/main_project/index.html';
-        //         </script>
-        //     ";
-        //     exit();
-        // }
-
         // 업데이트 구문: UPDATE [table name] set [update column](= [update value]) WHERE [condition]
         $sql = "UPDATE spl_user set user_lvl = ? WHERE user_idx = ?";
 
@@ -116,9 +106,6 @@
             echo json_encode(array("msg" => "레벨 변경이 되지 않았습니다."));
 
         }
-
-        // echo json_encode(array("user_id" => $user_id, "user_idx" => $user_idx, "user_lvl" => $user_lvl));
-
     }
 
     function del_user($conn)  {
@@ -137,8 +124,6 @@
             exit();
         }
 
-
-        // echo $user_idx;
         // 삭제 구문: DELETE FROM [table name] WHERE [condition]
         $sql = "DELETE FROM spl_user WHERE user_idx = $user_idx";
         mysqli_query($conn, $sql);
