@@ -1,7 +1,7 @@
 <?php
 
-    include $_SERVER['DOCUMENT_ROOT'].'/main_backend/etc/error.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/main_backend/connect/dbconn.php';
+    include $_SERVER['DOCUMENT_ROOT'].'/soaply_backend/etc/error.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/soaply_backend/connect/dbconn.php';
 
     function parse_raw_http_request(array &$a_data)
     {
@@ -118,7 +118,7 @@
             echo    "
                 <script>
                 alert('잘못된 접근입니다.');
-                location,href='/main_project/index.html';
+                location,href='/soaply/index.html';
                 </script>
             ";
             exit();

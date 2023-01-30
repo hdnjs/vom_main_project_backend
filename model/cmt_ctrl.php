@@ -1,7 +1,7 @@
 <?php
 
-    include $_SERVER['DOCUMENT_ROOT'].'/main_backend/etc/error.php';
-    include_once $_SERVER['DOCUMENT_ROOT'].'/main_backend/connect/dbconn.php';
+    include $_SERVER['DOCUMENT_ROOT'].'/soaply_backend/etc/error.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/soaply_backend/connect/dbconn.php';
 
     if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['req_sign']) && $_GET['req_sign'] == 'post_cmt')    {
         post_cmt($conn);

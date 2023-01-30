@@ -1,6 +1,6 @@
 <?php
 
-    include $_SERVER['DOCUMENT_ROOT'].'/main_backend/etc/error.php';
+    include $_SERVER['DOCUMENT_ROOT'].'/soaply_backend/etc/error.php';
     date_default_timezone_set('Asia/Seoul');
 
     // 1. 변수 정리: 텍스트 변수, 이미지 파일 정보 변수, 날짜 변수, 이미지 확장자 필터링 변수, 파일 사이즈 제한 변수
@@ -44,7 +44,7 @@
         exit();
     }
 
-    $image_dir = $_SERVER['DOCUMENT_ROOT'].'/main_project/images/products/';  //  사진이 저장될 경로 저장
+    $image_dir = $_SERVER['DOCUMENT_ROOT'].'/soaply/images/products/';  //  사진이 저장될 경로 저장
 
     // 이미지 업로드: 파일 업로드 시 파일 자체는 지정한 디렉토리 안으로 가고, DB에는 파일 이름 문자열이 저장된다.
     if($image_name && !$image_error)    {
@@ -59,7 +59,7 @@
     }
 
     // 접속 정보 로드
-    include_once $_SERVER['DOCUMENT_ROOT'].'/main_backend/connect/dbconn.php';
+    include_once $_SERVER['DOCUMENT_ROOT'].'/soaply_backend/connect/dbconn.php';
 
     // sql 명령어 입력
     // sql 입력 명령어 작성

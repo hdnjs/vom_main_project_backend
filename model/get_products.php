@@ -15,7 +15,7 @@ if($limit == 'all') {
 }
 
 // 접속 정보 로드
-include $_SERVER['DOCUMENT_ROOT'].'/main_backend/connect/dbconn.php';
+include $_SERVER['DOCUMENT_ROOT'].'/soaply_backend/connect/dbconn.php';
 
 $sql = "SELECT * FROM spl_products ORDER BY pro_reg DESC $query_qnt";
 
