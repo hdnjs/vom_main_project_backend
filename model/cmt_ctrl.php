@@ -128,7 +128,7 @@
         $avg_arr = mysqli_fetch_array($avg_result)['avg'];
 
         if(!mysqli_num_rows($result))   {
-            echo json_encode(array("msg" => "조회된 게시글이 없습니다."));
+            echo json_encode(array("msg" => "조회된 게시글이 없습니다.", "avg" => 0));
             exit();
         }   else    {
             $json_result = array(); //  빈 배열 초기화
